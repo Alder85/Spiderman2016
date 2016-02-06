@@ -2,9 +2,11 @@
 package org.usfirst.frc.team2220.robot;
 
 
-import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.CANTalon.*;
+//import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
+import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -32,26 +34,31 @@ public class Robot extends SampleRobot {
      */
     public void operatorControl() {
     	
-    	CANTalon testModule = new CANTalon(2);
+    	CANTalon testModule = new CANTalon(9);
     	testModule.setProfile(0);
     	testModule.setP(1);
     	testModule.setI(0.005);
+    	
+    	
+    	
     	
     	testModule.reverseOutput(true);
     	
     	SmartDashboard dash = new SmartDashboard();
     //	testModule.changeControlMode(TalonControlMode.Position);
-    	testModule.setFeedbackDevice(FeedbackDevice.AnalogPot);
+    	testModule.setFeedbackDevice(FeedbackDevice.PulseWidth);
 
         while (isOperatorControl() && isEnabled()) {
         		testModule.set(0.10); 
-        	   
+
         	   	dash.putNumber("error", testModule.getError());
         		dash.putNumber("tickPos", testModule.get());
-        		dash.putNumber("getPos", testModule.getPosition());
+        		dash.putNumber("getPos", testModule.getPulseWidthPosition());
+        		/*
         		dash.putNumber("analogPos", testModule.getAnalogInPosition());
         		dash.putNumber("analogRaw", testModule.getAnalogInRaw());
         		dash.putNumber("quadPos", testModule.getEncPosition());
+        		*/
 
 
             Timer.delay(0.005);		// wait for a motor update time
