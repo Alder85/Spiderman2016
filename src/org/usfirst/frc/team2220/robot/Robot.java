@@ -6,6 +6,7 @@ package org.usfirst.frc.team2220.robot;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,39 +35,58 @@ public class Robot extends SampleRobot {
      * @TODO
      */
     public void operatorControl() {
+    	TwilightTalon frWheel = new TwilightTalon(1);
+    	TwilightTalon flWheel = new TwilightTalon(2);
+    	TwilightTalon blWheel = new TwilightTalon(3);
+    	TwilightTalon brWheel = new TwilightTalon(4);
     	
-    	CANTalon testModule = new CANTalon(9);
-    	int absPosition = testModule.getPulseWidthPosition();
-    	testModule.setEncPosition(absPosition);
-    	testModule.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    	testModule.reverseSensor(false);
+    	ModuleRotation frModule = new ModuleRotation(new TwilightTalon(5));
+    	ModuleRotation flModule = new ModuleRotation(new TwilightTalon(6));
+    	ModuleRotation blModule = new ModuleRotation(new TwilightTalon(7));
+    	ModuleRotation brModule = new ModuleRotation(new TwilightTalon(8));
     	
-    	testModule.setProfile(0);
-    	testModule.setF(0.0);
-    	testModule.setP(0.1);
-    	testModule.setI(0.0);
-    	testModule.setD(0.0);
-    	
-    	//testModule.setPulseWidthPosition(0);
-    	
-    	
-    	//testModule.reverseOutput(true);
+    	Joystick xbox = new Joystick(0);
     	
     	SmartDashboard dash = new SmartDashboard();
      	//testModule.changeControlMode(TalonControlMode.Position);
     	//testModule.setFeedbackDevice(FeedbackDevice.EncFalling);
-    	
+    	boolean oldButton0 = false;
+    	boolean button0;
+    	boolean oldButton1 = false;
+    	boolean button1;
+    	double leftAxis, rightAxis;
         while (isOperatorControl() && isEnabled()) {
-        		testModule.set(-0.1); 
-        	   	dash.putNumber("error", testModule.getError());
-        		dash.putNumber("tickPos", testModule.get());
-        		dash.putNumber("pulseWidthPos", testModule.getPulseWidthPosition());
-        		dash.putString("devicePresent", testModule.isSensorPresent(FeedbackDevice.CtreMagEncoder_Absolute) + "");
-        		//QuadEncoder, AnalogEncoder, AnalogPot, EncRising, EncFalling 
-        	//	dash.putNumber("PWM velocity", testModule.getPulseWidthVelocity());
-        		dash.putNumber("analogRaw", testModule.getAnalogInRaw());
-        		dash.putNumber("quadPos", testModule.getEncPosition());
+        	button0 = xbox.getRawButton(1);
+        	if(button0 && !oldButton0)
+        	{
+        		frModule.increment(1);
+        		flModule.increment(1);
+        		blModule.increment(1);
+        		brModule.increment(1);
+        	}
+        	oldButton0 = button0;
+        	
+        	button1 = xbox.getRawButton(2);
+        	if(button1 && !oldButton1)
+        	{
+        		frModule.increment(-1);
+        		flModule.increment(-1);
+        		blModule.increment(-1);
+        		brModule.increment(-1);
+        	}
+        	oldButton1 = button1;
         		
+        	leftAxis = xbox.getRawAxis(2);
+        	rightAxis = xbox.getRawAxis(5) * -1;
+        	
+        	frWheel.set(rightAxis);
+        	brWheel.set(rightAxis);
+        	
+        	flWheel.set(leftAxis);
+        	blWheel.set(leftAxis);
+        	
+        	
+        	
 
 
             Timer.delay(0.005);		// wait for a motor update time
