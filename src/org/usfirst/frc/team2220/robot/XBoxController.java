@@ -22,9 +22,7 @@ public class XBoxController extends Joystick{
 		buttonArray[7] = Button.back;
 		buttonArray[8] = Button.start;
 		buttonArray[9] = Button.lStickPress;
-		buttonArray[10] = Button.rStickPress;
-		buttonArray[11] = Button.lTrigger;
-		buttonArray[12] = Button.rTrigger;
+		buttonArray[10] = Button.rStickPress; //triggers are axes
 	}
 	
 	/*
@@ -33,8 +31,7 @@ public class XBoxController extends Joystick{
 	 */
 	public enum Button {
 	    aButton(1), bButton(2), xButton(3), yButton(4), lBumper(5), 
-	    rBumper(6), back(7), start(8), lStickPress(9), rStickPress(10),
-	    lTrigger(11), rTrigger(12);
+	    rBumper(6), back(7), start(8), lStickPress(9), rStickPress(10);
 
 	    public int value;
 	    public boolean pressed = false;
@@ -56,7 +53,7 @@ public class XBoxController extends Joystick{
 	/*
 	 * true constantly while button is held
 	 */
-	public boolean isHeld(Button x)
+	public boolean whileHeld(Button x) 
 	{
 		return x.pressed;
 	}
@@ -75,7 +72,7 @@ public class XBoxController extends Joystick{
 	 */
 	public void update()
 	{
-		for(int i = 1;i <= 12;i++)
+		for(int i = 1;i <= 10;i++)
 		{
 			buttonArray[i].oldValue = buttonArray[i].pressed;
 			buttonArray[i].pressed = this.getRawButton(buttonArray[i].value);

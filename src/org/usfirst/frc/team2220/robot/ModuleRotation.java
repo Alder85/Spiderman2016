@@ -16,17 +16,28 @@ public class ModuleRotation {
 		talon.setFeedbackDevice(FeedbackDevice.PulseWidth);
 		talon.changeControlMode(TalonControlMode.Position);
 		
-		this.reverseSensor(true);
+		this.reverseSensor(false);
 		
 		talon.setProfile(0); //we aren't using multiple profiles yet
 		
 		
-		this.setP(0.15);
+		this.setP(0.15); //previously 0.15
 		this.setI(0.001);
 		talon.setAllowableClosedLoopErr(30);	//How imprecise we'll allow the motor to be. lower numbers = more motor jiggling
 		
+		//talon.set(defaultTarget);
+	}
+	
+	void setOffset(double val)
+	{
+		defaultTarget = val;
+	}
+	
+	void goToDefault()
+	{
 		talon.set(defaultTarget);
 	}
+	
 	
 	void setPID(double p, double i, double d)
 	{
@@ -66,8 +77,13 @@ public class ModuleRotation {
 	 * because the modules are symetrical
 	 */
 	void increment(int quarters) {		
-		target += quarters * 0.125;
+		target = talon.get() + (quarters * 0.125);
 		talon.set(target);
+	}
+	
+	void set(double point)
+	{
+		talon.set(point);
 	}
 	
 	double getError() {			
