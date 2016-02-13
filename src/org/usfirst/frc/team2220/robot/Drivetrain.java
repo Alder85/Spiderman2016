@@ -46,6 +46,38 @@ public class Drivetrain {
 		blW.set(pow);
 	}
 	
+	public void startXDrive()
+	{
+		flM.increment(-1);
+		frM.increment(1);
+		blM.increment(1);
+		brM.increment(-1);
+	}
+	
+	public void stopXDrive()
+	{
+		flM.increment(1);
+		frM.increment(-1);
+		blM.increment(-1);
+		brM.increment(1);
+	}
+	
+	public void turnInwards()
+	{
+		flM.increment(-1);
+		frM.increment(-1);
+		blM.increment(1);
+		brM.increment(1);
+	}
+	
+	public void turnOutwards()
+	{
+		flM.increment(1);
+		frM.increment(1);
+		blM.increment(-1);
+		brM.increment(-1);
+	}
+	
 	/*
 	 * switch for figuring out which module
 	 * maybe I want a module enum?

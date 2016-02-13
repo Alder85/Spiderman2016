@@ -6,7 +6,8 @@ import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 public class ModuleRotation {
 	private TwilightTalon talon;
 	double defaultTarget = 0.0, target;
-	int allowableError = 10;
+	int relativeAllowableError = 30, allowableError = 10;
+	
 	/*
 	 * Constructor will, in the future, take more parameters
 	 */
@@ -84,6 +85,11 @@ public class ModuleRotation {
 		talon.reverseOutput(reversed);
 	}
 	
+	boolean withinRange()
+	{
+		return (this.getError() < relativeAllowableError && this.getError() > -relativeAllowableError);
+	}
+
 	/*
 	 * increments the motor position by an eighth-turn. inputting 2 gives a quarter turn, etc.
 	 * Technically we refer to an 8th full turn as a quarter turn, as only 1/2 full is relevant 
@@ -91,6 +97,7 @@ public class ModuleRotation {
 	 */
 	void increment(int quarters) {		
 		//target = talon.get() + (quarters * 0.125);
+		talon.enable();
 		target += quarters * 0.125;
 		talon.set(target);
 	}

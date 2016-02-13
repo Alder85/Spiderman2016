@@ -38,16 +38,18 @@ public class Robot extends SampleRobot {
     		return 0;
     	return val;
     }
+    
     /**
      * TeleOp
      * @TODO
      */
     public void operatorControl() {
-    	
+    	TwilightTalon[] talons = new TwilightTalon[16];
     	TwilightTalon frWheel = new TwilightTalon(8);
     	TwilightTalon flWheel = new TwilightTalon(1);
     	TwilightTalon blWheel = new TwilightTalon(3);
     	TwilightTalon brWheel = new TwilightTalon(6);
+    	
     	
     	TwilightTalon talon7 = new TwilightTalon(7);
     	ModuleRotation frModule = new ModuleRotation(talon7);
@@ -98,7 +100,7 @@ public class Robot extends SampleRobot {
     	SmartDashboard dash = new SmartDashboard();
      	//testModule.changeControlMode(TalonControlMode.Position);
     	//testModule.setFeedbackDevice(FeedbackDevice.EncFalling);
-    	
+    	int turnQuarters = 2;
     	double leftAxis, rightAxis;
     	double[] maxVal = new double[4];
     	double wheelDZ = 0.15;
@@ -110,34 +112,89 @@ public class Robot extends SampleRobot {
         	dash.putNumber("frontRightErr", talon7.getError());
         	dash.putNumber("frontLeftErr", talon2.getError());
         	dash.putNumber("encPos", brModule.getPosition());
-        	dash.putNumber("powBR", talon5.get());
-        	dash.putNumber("powBL", talon4.get());
-        	dash.putNumber("powFR", talon7.get());
+        	
+        	dash.putBoolean("withinStopBR", brModule.withinRange());
+        	dash.putBoolean("withinStopBL", blModule.withinRange());
+        	dash.putBoolean("withinStopFR", frModule.withinRange());
+        	dash.putBoolean("withinStopFL", flModule.withinRange());
+        	
+        	
+        	dash.putNumber("powBR", talon5.getOutputCurrent());
+        	dash.putNumber("powBL", talon4.getOutputCurrent());
+        	dash.putNumber("powFR", talon7.getOutputCurrent());
+        	dash.putNumber("powFL", talon2.getOutputCurrent());
+        	
+        	
+        	temp[0] = talon5.getOutputCurrent();
+        	if(temp[0] > maxVal[0])
+        		maxVal[0] = temp[0];
+        	dash.putNumber("maxBR", maxVal[0]);
+        	
+        	temp[1] = talon4.getOutputCurrent();
+        	if(temp[1] > maxVal[1])
+        		maxVal[1] = temp[1];
+        	dash.putNumber("maxBL", maxVal[1]);
+        	
+        	temp[2] = talon7.getOutputCurrent();
+        	if(temp[2] > maxVal[2])
+        		maxVal[2] = temp[2];
+        	dash.putNumber("maxFR", maxVal[2]);
+        	
         	temp[3] = talon2.getOutputCurrent();
         	if(temp[3] > maxVal[3])
         		maxVal[3] = temp[3];
-        	dash.putNumber("powFL", maxVal[3]);
+        	dash.putNumber("maxFL", maxVal[3]);
         	
-        	leftAxis = deadZone(xbox.getRawAxis(1) * 0.8, wheelDZ);
-        	rightAxis = deadZone(xbox.getRawAxis(5) * -0.8, wheelDZ);
-        	
+        	leftAxis = deadZone(xbox.getRawAxis(1), wheelDZ);
+        	rightAxis = deadZone(xbox.getRawAxis(5) * -1, wheelDZ);
         	
         	
         	drivetrain.setLeftWheels(leftAxis);
         	drivetrain.setRightWheels(rightAxis);
-        	if(xbox.onPress(Button.lBumper))
-        		drivetrain.goToDefault();
+        //	if(xbox.onPress(Button.lBumper))
+        	//	drivetrain.goToDefault();
         	
-        	if(xbox.onPress(Button.aButton)) 
-        		drivetrain.incrementAllModules(1);
+        	if(xbox.whileHeld(Button.rBumper))
+        	{
+        		double tempTune = 1;
+        		turnQuarters = 1;
+            	frModule.setP(tempTune);
+            	brModule.setP(tempTune);
+            	flModule.setP(tempTune);
+            	blModule.setP(tempTune);
+        	}
+        	else
+        	{
+        		double tempTune = 2.5;
+        		turnQuarters = 2;
+            	frModule.setP(tempTune);
+            	brModule.setP(tempTune);
+            	flModule.setP(tempTune);
+            	blModule.setP(tempTune);
+        	}
+        	if(xbox.onPress(Button.xButton)) 
+        		drivetrain.incrementAllModules(turnQuarters);
+        	
+        	if(xbox.onPress(Button.yButton))
+        		drivetrain.incrementAllModules(-turnQuarters);
+        	
+        	if(xbox.onPress(Button.aButton))
+        		drivetrain.turnInwards();
         	
         	if(xbox.onPress(Button.bButton))
-        		drivetrain.incrementAllModules(-1);
+        		drivetrain.turnOutwards();
         	
+        	/*
+        	if(xbox.onPress(Button.start))
+        		drivetrain.startXDrive();
         	
-        	if(xbox.whileHeld(Button.xButton))
+        	if(xbox.onPress(Button.back))
+        		drivetrain.stopXDrive();
+        		*/
+        	
+        	if(xbox.whileHeld(Button.lBumper))
         	{
-        		collector.set(0.8);
+        		collector.set(1.0);
         		rightShooter.set(1.0);
         		leftShooter.set(-1.0);
         	}
@@ -147,6 +204,21 @@ public class Robot extends SampleRobot {
         		rightShooter.set(0);
         		leftShooter.set(0);
         	}
+        	
+        	
+        	/*
+        	frWheel.test();
+        	flWheel.test();
+        	blWheel.test();
+        	brWheel.test();
+        	talon7.test();
+        	talon2.test();
+        	talon4.test();
+        	talon5.test();
+        	collector.test();
+        	rightShooter.test();
+        	leftShooter.test();
+        	*/
         	
         	/*
         	if(xbox.onPress(Button.aButton))
@@ -211,6 +283,7 @@ public class Robot extends SampleRobot {
             Timer.delay(0.005);		// wait for a motor update time
         }
     }
+    
 
     /**
      * Test mode

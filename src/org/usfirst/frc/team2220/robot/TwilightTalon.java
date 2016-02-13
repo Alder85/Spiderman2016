@@ -13,8 +13,8 @@ public class TwilightTalon extends CANTalon{
 	 */
 	public TwilightTalon(int port) {
 		super(port);
-		maxCurrent = 27.0;	//Normal Load Value
-		maxTemp = 5.0;	//Could not find temp value, currently placeholder
+		maxCurrent = 40.0;	//Normal Load Value
+		maxTemp = 500.0;	//Could not find temp value, currently placeholder
 	}
 	
 	public void setMaxCurrent(double newCurrent) {
@@ -29,7 +29,6 @@ public class TwilightTalon extends CANTalon{
 	{
 		if(!disabled)
 		{
-			super.enable();
 			super.set(setpoint);
 		}
 	}
@@ -42,10 +41,13 @@ public class TwilightTalon extends CANTalon{
 		boolean test = true;
 		if (isOverMaxCurrent()) 
 			test = false;
-		if (isOverMaxTemp())
-			test = false;
+	//	if (isOverMaxTemp())
+		//	test = false;
 		if(!test)
-			printWarning();
+		{
+			this.disable();
+			disabled = true;
+		}
 		return test;
 	}
 	
