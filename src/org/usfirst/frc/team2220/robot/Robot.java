@@ -66,6 +66,7 @@ public class Robot extends SampleRobot {
     	TwilightTalon leftShooter  = new TwilightTalon(12);
     	
     	
+    	
     	flModule.reverseTalon(true);
     	blModule.reverseTalon(true);
     	brModule.reverseTalon(true);
@@ -77,7 +78,7 @@ public class Robot extends SampleRobot {
     	brModule.setOffset(0.04);
     	
     	flModule.setOffset(-0.14);
-    	blModule.setOffset(0.19);
+    	blModule.setOffset(0);
     	
     	double allTuning = 2.5;
     	frModule.setP(allTuning);
@@ -132,6 +133,21 @@ public class Robot extends SampleRobot {
         	
         	if(xbox.onPress(Button.bButton))
         		drivetrain.incrementAllModules(-1);
+        	
+        	
+        	if(xbox.whileHeld(Button.xButton))
+        	{
+        		collector.set(0.8);
+        		rightShooter.set(1.0);
+        		leftShooter.set(-1.0);
+        	}
+        	else
+        	{
+        		collector.set(0);
+        		rightShooter.set(0);
+        		leftShooter.set(0);
+        	}
+        	
         	/*
         	if(xbox.onPress(Button.aButton))
         		drivetrain.incrementModule(1, 1);
