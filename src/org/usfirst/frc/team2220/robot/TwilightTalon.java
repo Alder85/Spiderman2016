@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.*;
 public class TwilightTalon extends CANTalon{
 	private double maxTemp;
 	private double maxCurrent;
+	private boolean disabled = false;
 	
 	/**
 	 * Cast of CANTalon class
@@ -22,6 +23,15 @@ public class TwilightTalon extends CANTalon{
 	
 	public void setMaxTemp(double newTemp) {
 		maxTemp = newTemp;
+	}
+	
+	public void set(double setpoint)
+	{
+		if(!disabled)
+		{
+			super.enable();
+			super.set(setpoint);
+		}
 	}
 	
 	/**

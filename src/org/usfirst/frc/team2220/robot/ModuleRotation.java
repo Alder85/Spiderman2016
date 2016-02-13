@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 
 public class ModuleRotation {
 	private TwilightTalon talon;
-	double target, defaultTarget = 0.0;
-
+	double defaultTarget = 0.0, target;
+	int allowableError = 10;
 	/*
 	 * Constructor will, in the future, take more parameters
 	 */
@@ -16,26 +16,39 @@ public class ModuleRotation {
 		talon.setFeedbackDevice(FeedbackDevice.PulseWidth);
 		talon.changeControlMode(TalonControlMode.Position);
 		
+		target = defaultTarget;
 		this.reverseSensor(false);
 		
 		talon.setProfile(0); //we aren't using multiple profiles yet
 		
 		
-		this.setP(0.15); //previously 0.15
+		//this.setP(0.15); //previously 0.15
 		this.setI(0.001);
-		talon.setAllowableClosedLoopErr(30);	//How imprecise we'll allow the motor to be. lower numbers = more motor jiggling
+		talon.setAllowableClosedLoopErr(allowableError);	//how much error is allowable
+		
 		
 		//talon.set(defaultTarget);
 	}
 	
+	void resetTalonPos()
+	{
+		talon.setEncPosition(talon.getPulseWidthPosition());
+	}
+	
+	
+	
 	void setOffset(double val)
 	{
 		defaultTarget = val;
+		target = defaultTarget;
 	}
 	
 	void goToDefault()
 	{
-		talon.set(defaultTarget);
+		//talon.setPulseWidthPosition((int) this.getPosition());
+		//talon.setPosition(talon.getPosition() % 1);
+		target = defaultTarget;
+		talon.set(target);
 	}
 	
 	
@@ -77,7 +90,8 @@ public class ModuleRotation {
 	 * because the modules are symetrical
 	 */
 	void increment(int quarters) {		
-		target = talon.get() + (quarters * 0.125);
+		//target = talon.get() + (quarters * 0.125);
+		target += quarters * 0.125;
 		talon.set(target);
 	}
 	
@@ -100,7 +114,7 @@ public class ModuleRotation {
 	
 	/*
 	 * Returns absolute position 0 to 4095
-	 * uncommend constant to convert to degrees
+	 * uncomment constant to convert to degrees
 	 */
 	double getPosition() {		
 		return (talon.getPulseWidthPosition() & 0xFFF)/**0.087890625*/;
