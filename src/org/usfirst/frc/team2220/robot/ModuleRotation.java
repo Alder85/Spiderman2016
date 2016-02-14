@@ -8,6 +8,7 @@ public class ModuleRotation {
 	double offsetTarget = 0.0, target, quadOffset;
 	int relativeAllowableError = 30, allowableError = 10;
 	boolean sensorReversed = false;
+	boolean isRightWheel = false;
 	
 	/*
 	 * Constructor will, in the future, take more parameters
@@ -33,6 +34,21 @@ public class ModuleRotation {
 		//talon.set(defaultTarget);
 	}
 	
+	void setFollower(int deviceID)
+	{
+		talon.changeControlMode(TalonControlMode.Follower);
+		talon.set(deviceID);
+	}
+	
+	int getDeviceID()
+	{
+		return talon.getDeviceID();
+	}
+	
+	void setRightWheel(boolean in)
+	{
+		isRightWheel = in;
+	}
 	/*
 	 * increments the motor position by an eighth-turn. inputting 2 gives a quarter turn, etc.
 	 * Technically we refer to an 8th full turn as a quarter turn, as only 1/2 full is relevant 
@@ -41,7 +57,10 @@ public class ModuleRotation {
 	void increment(int quarters) {		
 		//target = talon.get() + (quarters * 0.125);
 		talon.enable();
-		target += quarters * 0.125;
+		if(!isRightWheel)
+			target += quarters * 0.125;
+		else
+			target -= quarters * 0.125;
 		talon.set(target);
 	}
 	

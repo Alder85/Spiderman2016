@@ -90,18 +90,21 @@ public class Robot extends SampleRobot {
     	flWheel.setMaxCurrent(100);
     	brWheel.setMaxCurrent(100);
     	blWheel.setMaxCurrent(100);
-    	collector.setMaxCurrent(40);
+    	collector.setMaxCurrent(60);
     	rightShooter.setMaxCurrent(70);
     	leftShooter.setMaxCurrent(70);
     	
     	flModule.reverseTalon(true);
     	blModule.reverseTalon(true);
 
-    	frModule.reverseTalon(false);
-    	brModule.reverseTalon(true);
+    	frModule.reverseTalon(true);
+    	brModule.reverseTalon(false);
     	
-    	frModule.reverseSensor(true);
-    	brModule.reverseSensor(true);
+    	frModule.setRightWheel(true);
+    	brModule.setRightWheel(true);
+    	
+    	frModule.reverseSensor(false);
+    	brModule.reverseSensor(false);
 
     //	frModule.setOffset(-0.110);
     //	brModule.setOffset(0.018);
@@ -183,13 +186,27 @@ public class Robot extends SampleRobot {
         	
         	drivetrain.setLeftWheels(leftAxis);
         	drivetrain.setRightWheels(rightAxis);
-        	if(xbox.onPress(Button.lBumper))
-        		drivetrain.goToDefault();
+        	//if(xbox.onPress(Button.lBumper))
+        	//	drivetrain.goToDefault();
         	
+        	/*
+        	if right trigger > 0.15 go into follower mode
         	
+        	 */
+        	/*
+        	if(xbox.getRawAxis(3) > 0.15)
+        	{
+        		flModule.setFollower(frModule.getDeviceID());
+        		blModule.setFollower(frModule.getDeviceID());
+        		brModule.setFollower(frModule.getDeviceID());
+        	}
+        	else
+        	{
+        		//TODO
+        	}
+        	*/
         	
-        	
-        	if(xbox.whileHeld(Button.rBumper))
+        	if(xbox.whileHeld(Button.aButton))
         	{
         		double tempTune = 1;
         		turnQuarters = 1;
@@ -215,10 +232,10 @@ public class Robot extends SampleRobot {
         		drivetrain.incrementAllModules(-turnQuarters);
         		*/
         	
-        	if(xbox.onPress(Button.aButton))
+        	if(xbox.onPress(Button.lBumper))
         		drivetrain.turnInwards();
         	
-        	if(xbox.onPress(Button.bButton))
+        	if(xbox.onPress(Button.rBumper))
         		drivetrain.turnOutwards();
         
         	if(xbox.whileHeld(Button.xButton))
