@@ -27,7 +27,6 @@ public class XBoxController extends Joystick{
 	
 	/*
 	 * enum for all Button (not axes) types on xbox controller
-	 * @TODO confirm that these are correct
 	 */
 	public enum Button {
 	    aButton(1), bButton(2), xButton(3), yButton(4), lBumper(5), 

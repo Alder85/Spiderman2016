@@ -39,79 +39,109 @@ public class Robot extends SampleRobot {
     	return val;
     }
     
+    TwilightTalon talon7 = new TwilightTalon(7);
+	ModuleRotation frModule = new ModuleRotation(talon7);
+	
+	TwilightTalon talon2 = new TwilightTalon(2);
+	ModuleRotation flModule = new ModuleRotation(talon2);
+	
+	TwilightTalon talon4 = new TwilightTalon(4);
+	ModuleRotation blModule = new ModuleRotation(talon4);
+	
+	TwilightTalon talon5 = new TwilightTalon(5);
+	ModuleRotation brModule = new ModuleRotation(talon5);
+	
+	SmartDashboard dash = new SmartDashboard();
+	TwilightTalon[] talons = new TwilightTalon[16];
+	TwilightTalon frWheel = new TwilightTalon(8);
+	TwilightTalon flWheel = new TwilightTalon(1);
+	TwilightTalon blWheel = new TwilightTalon(3);
+	TwilightTalon brWheel = new TwilightTalon(6);
+	
+	
+	
+	
+	
+	TwilightTalon collector = new TwilightTalon(10);
+	TwilightTalon rightShooter = new TwilightTalon(9);
+	TwilightTalon leftShooter  = new TwilightTalon(12);
+
+	Drivetrain drivetrain = new Drivetrain();
+	
+	
+	
+	//LEFt need to be flipped
+	//xbox start 0,0 top left so flip right
+	XBoxController xbox = new XBoxController(0);
+	XBoxController secondController = new XBoxController(1);
+	
+	
+ 	//testModule.changeControlMode(TalonControlMode.Position);
+	//testModule.setFeedbackDevice(FeedbackDevice.EncFalling);
+	
+	
     /**
      * TeleOp
      * @TODO
      */
     public void operatorControl() {
-    	TwilightTalon[] talons = new TwilightTalon[16];
-    	TwilightTalon frWheel = new TwilightTalon(8);
-    	TwilightTalon flWheel = new TwilightTalon(1);
-    	TwilightTalon blWheel = new TwilightTalon(3);
-    	TwilightTalon brWheel = new TwilightTalon(6);
     	
-    	
-    	TwilightTalon talon7 = new TwilightTalon(7);
-    	ModuleRotation frModule = new ModuleRotation(talon7);
-    	
-    	TwilightTalon talon2 = new TwilightTalon(2);
-    	ModuleRotation flModule = new ModuleRotation(talon2);
-    	
-    	TwilightTalon talon4 = new TwilightTalon(4);
-    	ModuleRotation blModule = new ModuleRotation(talon4);
-    	
-    	TwilightTalon talon5 = new TwilightTalon(5);
-    	ModuleRotation brModule = new ModuleRotation(talon5);
-    	
-    	TwilightTalon collector = new TwilightTalon(10);
-    	TwilightTalon rightShooter = new TwilightTalon(9);
-    	TwilightTalon leftShooter  = new TwilightTalon(12);
-    	
-    	
+    	frWheel.setMaxCurrent(100);
+    	flWheel.setMaxCurrent(100);
+    	brWheel.setMaxCurrent(100);
+    	blWheel.setMaxCurrent(100);
+    	collector.setMaxCurrent(40);
+    	rightShooter.setMaxCurrent(70);
+    	leftShooter.setMaxCurrent(70);
     	
     	flModule.reverseTalon(true);
     	blModule.reverseTalon(true);
+
+    	frModule.reverseTalon(false);
     	brModule.reverseTalon(true);
     	
-    	brModule.reverseSensor(true);
     	frModule.reverseSensor(true);
+    	brModule.reverseSensor(true);
+
+    //	frModule.setOffset(-0.110);
+    //	brModule.setOffset(0.018);
     	
-    	frModule.setOffset(0.37);
-    	brModule.setOffset(0.04);
-    	
-    	flModule.setOffset(-0.14);
-    	blModule.setOffset(0);
+    //	flModule.setOffset(0.226);
+    //	blModule.setOffset(0.020);
     	
     	double allTuning = 2.5;
+    	
     	frModule.setP(allTuning);
     	brModule.setP(allTuning);
     	flModule.setP(allTuning);
     	blModule.setP(allTuning);
     	
-    	Drivetrain drivetrain = new Drivetrain();
-    	
     	drivetrain.setModules(flModule, frModule, brModule, blModule);
     	drivetrain.setWheels(flWheel, frWheel, brWheel, blWheel);
     	
-    	//LEFt need to be flipped
-    	//xbox start 0,0 top left so flip right
-    	XBoxController xbox = new XBoxController(0);
-    	
-    	SmartDashboard dash = new SmartDashboard();
-     	//testModule.changeControlMode(TalonControlMode.Position);
-    	//testModule.setFeedbackDevice(FeedbackDevice.EncFalling);
     	int turnQuarters = 2;
     	double leftAxis, rightAxis;
     	double[] maxVal = new double[4];
     	double wheelDZ = 0.15;
     	double[] temp = new double[4];
+    	
         while (isOperatorControl() && isEnabled()) {
-        	xbox.update();
+        	
         	dash.putNumber("backRightErr", talon5.getError());
         	dash.putNumber("backLeftErr", talon4.getError());
         	dash.putNumber("frontRightErr", talon7.getError());
         	dash.putNumber("frontLeftErr", talon2.getError());
-        	dash.putNumber("encPos", brModule.getPosition());
+        	
+        	dash.putNumber("brPos", brModule.getDoublePosition());
+        	dash.putNumber("blPos", blModule.getDoublePosition());
+        	dash.putNumber("frPos", frModule.getDoublePosition());
+        	dash.putNumber("flPos", flModule.getDoublePosition());
+        	
+        	dash.putNumber("pos2", brModule.getModuloPosition());
+        	dash.putNumber("pos3", brModule.getDesiredPosition());
+//        	if(xbox.onPress(Button.aButton))
+
+        	
         	
         	dash.putBoolean("withinStopBR", brModule.withinRange());
         	dash.putBoolean("withinStopBL", blModule.withinRange());
@@ -145,14 +175,19 @@ public class Robot extends SampleRobot {
         		maxVal[3] = temp[3];
         	dash.putNumber("maxFL", maxVal[3]);
         	
+        	xbox.update();
+        	
         	leftAxis = deadZone(xbox.getRawAxis(1), wheelDZ);
         	rightAxis = deadZone(xbox.getRawAxis(5) * -1, wheelDZ);
         	
         	
         	drivetrain.setLeftWheels(leftAxis);
         	drivetrain.setRightWheels(rightAxis);
-        //	if(xbox.onPress(Button.lBumper))
-        	//	drivetrain.goToDefault();
+        	if(xbox.onPress(Button.lBumper))
+        		drivetrain.goToDefault();
+        	
+        	
+        	
         	
         	if(xbox.whileHeld(Button.rBumper))
         	{
@@ -172,41 +207,65 @@ public class Robot extends SampleRobot {
             	flModule.setP(tempTune);
             	blModule.setP(tempTune);
         	}
+        	/*
         	if(xbox.onPress(Button.xButton)) 
         		drivetrain.incrementAllModules(turnQuarters);
         	
         	if(xbox.onPress(Button.yButton))
         		drivetrain.incrementAllModules(-turnQuarters);
+        		*/
         	
         	if(xbox.onPress(Button.aButton))
         		drivetrain.turnInwards();
         	
         	if(xbox.onPress(Button.bButton))
         		drivetrain.turnOutwards();
-        	
-        	/*
-        	if(xbox.onPress(Button.start))
-        		drivetrain.startXDrive();
-        	
-        	if(xbox.onPress(Button.back))
-        		drivetrain.stopXDrive();
-        		*/
-        	
-        	if(xbox.whileHeld(Button.lBumper))
+        
+        	if(xbox.whileHeld(Button.xButton))
         	{
         		collector.set(1.0);
+        	}
+        	else
+        	{
+        		collector.set(0);
+        	}
+        	
+        	if(xbox.whileHeld(Button.yButton))
+        	{
         		rightShooter.set(1.0);
         		leftShooter.set(-1.0);
         	}
         	else
         	{
-        		collector.set(0);
         		rightShooter.set(0);
         		leftShooter.set(0);
         	}
-        	
-        	
         	/*
+        	secondController.update();
+        	if(secondController.whileHeld(Button.aButton))
+        	{
+        		collector.set(1.0);
+        	}
+        	else
+        	{
+        		collector.set(0);
+        	}
+        	
+        	if(secondController.whileHeld(Button.bButton))
+        	{
+        		rightShooter.set(1.0);
+        		leftShooter.set(-1.0);
+        	}
+        	else
+        	{
+        		rightShooter.set(0);
+        		leftShooter.set(0);
+        	}
+        	*/
+        	
+        	
+        	
+        	
         	frWheel.test();
         	flWheel.test();
         	blWheel.test();
@@ -218,77 +277,28 @@ public class Robot extends SampleRobot {
         	collector.test();
         	rightShooter.test();
         	leftShooter.test();
-        	*/
         	
-        	/*
-        	if(xbox.onPress(Button.aButton))
-        		drivetrain.incrementModule(1, 1);
-        	
-        	if(xbox.onPress(Button.bButton))
-        		drivetrain.incrementModule(2, 1);
-        	
-        	if(xbox.onPress(Button.xButton))
-        		drivetrain.incrementModule(3, 1);
-        	
-        	if(xbox.onPress(Button.yButton))
-        		drivetrain.incrementModule(4, 1);
-        		*/
-        	
-        	 /*
-        	blWheel.set(leftAxis);
-        	flWheel.set(leftAxis);
-        	
-        	brWheel.set(rightAxis);
-        	frWheel.set(rightAxis);
-        	
-        	
-        	if(xbox.onPress(Button.lBumper))
-        	{
-        		flModule.goToDefault();
-        		frModule.goToDefault();
-        		blModule.goToDefault();
-        		brModule.goToDefault();
-        	}
-        	
-        	if(xbox.onPress(Button.start))
-        	{
-        		flModule.increment(1);
-        		frModule.increment(1);
-        		brModule.increment(1);
-        		blModule.increment(1);
-        	}
-        	if(xbox.onPress(Button.back))
-        	{
-        		flModule.increment(-1);
-        		frModule.increment(-1);
-        		brModule.increment(-1);
-        		blModule.increment(-1);
-        	}
-        
-        	
-        	if(xbox.onPress(Button.xButton))
-        	{
-        		blModule.increment(1);
-        	}
-        	
-        	if(xbox.onPress(Button.yButton))
-        	{
-        		brModule.increment(1);
-        	}
-        	*/
-        	
-        	
-
+       
 
             Timer.delay(0.005);		// wait for a motor update time
         }
     }
-    
+    public void practice()
+    {
+    	while(isEnabled())
+    	{
+	    	dash.putNumber("backRightErr", talon5.getError());
+	    	dash.putNumber("backLeftErr", talon4.getError());
+	    	dash.putNumber("frontRightErr", talon7.getError());
+	    	dash.putNumber("frontLeftErr", talon2.getError());
+    	}
+    }
 
     /**
      * Test mode
      * @TODO diagnostics
      */
     public void test() {
+    	
     }
 }
