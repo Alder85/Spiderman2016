@@ -47,22 +47,9 @@ public class Drivetrain {
 		blW.set(pow);
 	}
 	
-	public void startXDrive()
-	{
-		flM.increment(-1);
-		frM.increment(1);
-		blM.increment(1);
-		brM.increment(-1);
-	}
-	
-	public void stopXDrive()
-	{
-		flM.increment(1);
-		frM.increment(-1);
-		blM.increment(-1);
-		brM.increment(1);
-	}
-	
+	/*
+	 * Turns modules inwards for short turning radius, or reverses outwards
+	 */
 	public void turnInwards()
 	{
 		flM.increment(-1);
@@ -71,6 +58,9 @@ public class Drivetrain {
 		brM.increment(1);
 	}
 	
+	/*
+	 * Turns modules outwards for wide turning radius, or 50% frame height, or transition to high frame
+	 */
 	public void turnOutwards()
 	{
 		flM.increment(1);
@@ -101,6 +91,92 @@ public class Drivetrain {
 				break;
 		}
 	}
+	
+	/*
+	 * Gets wheel power, for macro
+	 */
+	public double getWheel(int wheel)
+	{
+		switch(wheel)
+		{
+			case frontLeft:
+				return flW.get();
+			case frontRight:
+				return frW.get();
+			case backRight:
+				return brW.get();
+			case backLeft:
+				return blW.get();
+		}
+		return 0;
+	}
+	
+	/*
+	 * Sets individual wheel, for macro
+	 */
+	public void setWheel(int wheel, double pow)
+	{
+		switch(wheel)
+		{
+			case frontLeft:
+				flW.set(pow);
+				break;
+			case frontRight:
+				frW.set(pow);
+				break;
+			case backRight:
+				brW.set(pow);
+				break;
+			case backLeft:
+				blW.set(pow);
+				break;
+		}
+	}
+	
+	/*
+	 * Gets module offset from start for macro
+	 * This allows modules to start in drastically different positions from when the macro is recorded,
+	 * but still work by only using the distance from start rather than the actual position
+	 */
+	public double getModuleDistanceFromStart(int module)
+	{
+		switch(module)
+		{
+			case frontLeft:
+				return flM.distanceFromStart();
+			case frontRight:
+				return frM.distanceFromStart();
+			case backRight:
+				return brM.distanceFromStart();
+			case backLeft:
+				return blM.distanceFromStart();
+		}
+		return 0;
+	}
+	
+	/*
+	 * Sets the module to a distance relative to what was recorded
+	 * for the macro
+	 */
+	public void setModuleDistanceFromStart(int module, double distance)
+	{
+		switch(module)
+		{
+			case frontLeft:
+				flM.setDistanceFromStart(distance);
+				break;
+			case frontRight:
+				frM.setDistanceFromStart(distance);
+				break;
+			case backRight:
+				brM.setDistanceFromStart(distance);
+				break;
+			case backLeft:
+				blM.setDistanceFromStart(distance);
+				break;
+		}
+	}
+	
 
 
 	
@@ -139,4 +215,6 @@ public class Drivetrain {
 		brW = br;
 		blW = bl;
 	}
+	
+	
 }

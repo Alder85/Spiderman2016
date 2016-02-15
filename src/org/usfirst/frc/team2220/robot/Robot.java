@@ -242,6 +242,10 @@ public class Robot extends SampleRobot {
         	{
         		collector.set(1.0);
         	}
+        	else if(xbox.whileHeld(Button.start))
+        	{
+        		collector.set(-1.0);
+        	}
         	else
         	{
         		collector.set(0);

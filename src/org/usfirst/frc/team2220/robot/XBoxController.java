@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Joystick;
 public class XBoxController extends Joystick{
 	
 	private Button[] buttonArray = new Button[13];
+	private int joystickNumber;
 	
 	/*
 	 * Initalize button array
@@ -13,6 +14,7 @@ public class XBoxController extends Joystick{
 	public XBoxController(int in)
 	{
 		super(in);
+		joystickNumber = in;
 		buttonArray[1] = Button.aButton;
 		buttonArray[2] = Button.bButton;
 		buttonArray[3] = Button.xButton;
@@ -33,8 +35,8 @@ public class XBoxController extends Joystick{
 	    rBumper(6), back(7), start(8), lStickPress(9), rStickPress(10);
 
 	    public int value;
-	    public boolean pressed = false;
-	    public boolean oldValue = false;
+	    public boolean[] pressed  = {false, false};
+	    public boolean[] oldValue = {false, false};
 
 	    private Button(int value) {
 	      this.value = value;
@@ -46,7 +48,7 @@ public class XBoxController extends Joystick{
 	 */
 	public boolean onPress(Button x)
 	{
-		return (x.pressed && !x.oldValue);
+		return (x.pressed[joystickNumber] && !x.oldValue[joystickNumber]);
 	}
 	
 	/*
@@ -54,7 +56,7 @@ public class XBoxController extends Joystick{
 	 */
 	public boolean whileHeld(Button x) 
 	{
-		return x.pressed;
+		return x.pressed[joystickNumber];
 	}
 	
 	/*
@@ -62,7 +64,7 @@ public class XBoxController extends Joystick{
 	 */
 	public boolean onRelease(Button x)
 	{
-		return (!x.pressed && x.oldValue);
+		return (!x.pressed[joystickNumber] && x.oldValue[joystickNumber]);
 	}
 	
 	/*
@@ -73,8 +75,8 @@ public class XBoxController extends Joystick{
 	{
 		for(int i = 1;i <= 10;i++)
 		{
-			buttonArray[i].oldValue = buttonArray[i].pressed;
-			buttonArray[i].pressed = this.getRawButton(buttonArray[i].value);
+			buttonArray[i].oldValue[joystickNumber] = buttonArray[i].pressed[joystickNumber];
+			buttonArray[i].pressed[joystickNumber] = this.getRawButton(buttonArray[i].value);
 		}
 	}
 }
