@@ -98,7 +98,7 @@ public class ModuleRotation {
 	 * Technically we refer to an 8th full turn as a quarter turn, as only 1/2 full is relevant 
 	 * because the modules are symetrical
 	 */
-	void increment(int quarters) {		
+	void incrementQuarters(int quarters) {		
 		//target = talon.get() + (quarters * 0.125);
 		talon.enable();
 		if(!isRightWheel)
@@ -106,6 +106,15 @@ public class ModuleRotation {
 		else
 			target -= quarters * 0.125;
 		talon.set(target);
+	}
+	
+	/**
+	 * same as incrementQuarters, except it's 8ths
+	 * except 8ths is actually 16ths of a full turn, but we call them 8ths because of the symmetry
+	 */
+	void incrementEights(int eights)
+	{
+		
 	}
 	
 	

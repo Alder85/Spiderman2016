@@ -8,10 +8,14 @@ import org.usfirst.frc.team2220.robot.XBoxController.Button;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * This is 2220's test code
@@ -65,7 +69,12 @@ public class Robot extends SampleRobot {
 	TwilightTalon collector = new TwilightTalon(10);
 	TwilightTalon rightShooter = new TwilightTalon(9);
 	TwilightTalon leftShooter  = new TwilightTalon(12);
-
+	
+	//POSITIVE SPINS counterclockwise
+	TwilightTalon collectorExtender = new TwilightTalon(11);
+	//counterclockwise for backward
+	//clockwise for forwards
+	
 	Drivetrain drivetrain = new Drivetrain();
 	
 	
@@ -85,6 +94,13 @@ public class Robot extends SampleRobot {
      * @TODO
      */
     public void operatorControl() {
+    	
+    	DigitalInput rearCollector  = new DigitalInput(0);
+    	DigitalInput frontCollector = new DigitalInput(1);
+    	//this sometimes gives an exception
+    	//we must figure this out
+    	
+    	collectorExtender.enableBrakeMode(true);
     	
     	frWheel.setMaxCurrent(100);
     	flWheel.setMaxCurrent(100);
@@ -129,6 +145,36 @@ public class Robot extends SampleRobot {
     	double[] temp = new double[4];
     	
         while (isOperatorControl() && isEnabled()) {
+        	
+        	secondController.update();
+        	if(secondController.whileHeld(Button.aButton))
+        	{
+        		if(frontCollector.get())
+        		{
+        			collectorExtender.set(-1.0);
+        		}
+        		else
+        		{
+        			collectorExtender.set(0);
+        		}
+        	}
+        	else if(secondController.whileHeld(Button.bButton))
+        	{
+        		if(rearCollector.get())
+        		{
+        			collectorExtender.set(1.0);
+        		}
+        		else
+        		{
+        			collectorExtender.set(0);
+        		}
+        	}
+        	else
+        	{
+        		collectorExtender.set(0);
+        	}
+        	dash.putBoolean("frontCollector", !frontCollector.get());
+        	dash.putBoolean("rearCollector", !rearCollector.get());
         	
         	dash.putNumber("backRightErr", talon5.getError());
         	dash.putNumber("backLeftErr", talon4.getError());

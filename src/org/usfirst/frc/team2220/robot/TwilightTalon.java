@@ -61,7 +61,7 @@ public class TwilightTalon extends CANTalon{
 		return CurrTemp > maxTemp;
 	}
 	
-	//@TODO test
+	//TODO test
 	public void stop() {
 		this.disableControl();
 	}

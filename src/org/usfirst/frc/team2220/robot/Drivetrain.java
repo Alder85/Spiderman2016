@@ -16,12 +16,14 @@ public class Drivetrain {
     //               //
 	///////////////////
 	
-	
 	public Drivetrain()
 	{
 		
 	}
 	
+	/**
+	 * @deprecated
+	 */
 	public void goToDefault()
 	{
 		flM.goToDefault();
@@ -29,7 +31,7 @@ public class Drivetrain {
 		brM.goToDefault();
 		blM.goToDefault();
 	}
-	/*
+	/**
 	 * sets the right wheels
 	 */
 	public void setRightWheels(double pow)
@@ -38,7 +40,7 @@ public class Drivetrain {
 		brW.set(pow);
 	}
 	
-	/*
+	/**
 	 * sets the left wheels
 	 */
 	public void setLeftWheels(double pow)
@@ -47,29 +49,29 @@ public class Drivetrain {
 		blW.set(pow);
 	}
 	
-	/*
+	/**
 	 * Turns modules inwards for short turning radius, or reverses outwards
 	 */
 	public void turnInwards()
 	{
-		flM.increment(-1);
-		frM.increment(-1);
-		blM.increment(1);
-		brM.increment(1);
+		flM.incrementQuarters(-1);
+		frM.incrementQuarters(-1);
+		blM.incrementQuarters(1);
+		brM.incrementQuarters(1);
 	}
 	
-	/*
+	/**
 	 * Turns modules outwards for wide turning radius, or 50% frame height, or transition to high frame
 	 */
 	public void turnOutwards()
 	{
-		flM.increment(1);
-		frM.increment(1);
-		blM.increment(-1);
-		brM.increment(-1);
+		flM.incrementQuarters(1);
+		frM.incrementQuarters(1);
+		blM.incrementQuarters(-1);
+		brM.incrementQuarters(-1);
 	}
 	
-	/*
+	/**
 	 * switch for figuring out which module
 	 * maybe I want a module enum?
 	 */
@@ -78,21 +80,21 @@ public class Drivetrain {
 		switch(module)
 		{
 			case frontLeft:
-				flM.increment(turns);
+				flM.incrementQuarters(turns);
 				break;
 			case frontRight:
-				frM.increment(turns);
+				frM.incrementQuarters(turns);
 				break;
 			case backRight:
-				brM.increment(turns);
+				brM.incrementQuarters(turns);
 				break;
 			case backLeft:
-				blM.increment(turns);
+				blM.incrementQuarters(turns);
 				break;
 		}
 	}
 	
-	/*
+	/**
 	 * Gets wheel power, for macro
 	 */
 	public double getWheel(int wheel)
@@ -111,7 +113,7 @@ public class Drivetrain {
 		return 0;
 	}
 	
-	/*
+	/**
 	 * Sets individual wheel, for macro
 	 */
 	public void setWheel(int wheel, double pow)
@@ -133,7 +135,7 @@ public class Drivetrain {
 		}
 	}
 	
-	/*
+	/**
 	 * Gets module offset from start for macro
 	 * This allows modules to start in drastically different positions from when the macro is recorded,
 	 * but still work by only using the distance from start rather than the actual position
@@ -154,7 +156,7 @@ public class Drivetrain {
 		return 0;
 	}
 	
-	/*
+	/**
 	 * Sets the module to a distance relative to what was recorded
 	 * for the macro
 	 */
@@ -180,18 +182,18 @@ public class Drivetrain {
 
 
 	
-	/*
+	/**
 	 * negative numbers for backwards
 	 */
 	public void incrementAllModules(int turns)
 	{
-		flM.increment(turns);
-		frM.increment(turns);
-		brM.increment(turns);
-		blM.increment(turns);
+		flM.incrementQuarters(turns);
+		frM.incrementQuarters(turns);
+		brM.incrementQuarters(turns);
+		blM.incrementQuarters(turns);
 	}
 	
-	/*
+	/**
 	 * sets up all the modules
 	 * works
 	 */
@@ -203,7 +205,7 @@ public class Drivetrain {
 		blM = bl;
 	}
 	
-	/*
+	/**
 	 * sets up all the wheels
 	 * 
 	 * CHANGE this to wheelrotation once that class works correctly
