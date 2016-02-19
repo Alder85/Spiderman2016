@@ -25,6 +25,7 @@ public class XBoxController extends Joystick{
 		buttonArray[8] = Button.start;
 		buttonArray[9] = Button.lStickPress;
 		buttonArray[10] = Button.rStickPress; //triggers are axes
+		
 	}
 	
 	/*
@@ -42,7 +43,7 @@ public class XBoxController extends Joystick{
 	      this.value = value;
 	    }
 	}
-	
+		
 	/*
 	 * true only once when button is pressed
 	 */
@@ -67,6 +68,43 @@ public class XBoxController extends Joystick{
 		return (!x.pressed[joystickNumber] && x.oldValue[joystickNumber]);
 	}
 	
+	public enum TriggerButton
+	{
+		rTrigger(0), lTrigger(1);
+		
+		public int value;
+		public double[] currVal = {0, 0};
+		public double[] oldVal  = {0, 0};
+		
+		private TriggerButton(int value)
+		{
+			this.value = value;
+		}
+	}
+	/*
+	 * true only once when TriggerButton is pressed
+	 */
+	public boolean onPress(TriggerButton x)
+	{
+		return (x.currVal[joystickNumber] > 0.85 && x.oldVal[joystickNumber] < 0.85);
+	}
+	
+	/*
+	 * true constantly while TriggerButton is held
+	 */
+	public boolean whileHeld(TriggerButton x) 
+	{
+		return x.currVal[joystickNumber] > 0.85;
+	}
+	
+	/*
+	 * true only once when TriggerButton is released
+	 */
+	public boolean onRelease(TriggerButton x)
+	{
+		return (x.currVal[joystickNumber] < 0.85 && x.oldVal[joystickNumber] > 0.85);
+	}
+	
 	/*
 	 * Call this once per robot loop
 	 * This will be able to differentiate pressed, held and released
@@ -78,5 +116,12 @@ public class XBoxController extends Joystick{
 			buttonArray[i].oldValue[joystickNumber] = buttonArray[i].pressed[joystickNumber];
 			buttonArray[i].pressed[joystickNumber] = this.getRawButton(buttonArray[i].value);
 		}
+		
+		TriggerButton.rTrigger.oldVal[joystickNumber] = TriggerButton.rTrigger.currVal[joystickNumber];
+		TriggerButton.rTrigger.currVal[joystickNumber] = this.getRawAxis(3);
+		
+		TriggerButton.lTrigger.oldVal[joystickNumber] = TriggerButton.lTrigger.currVal[joystickNumber];
+		TriggerButton.lTrigger.currVal[joystickNumber] = this.getRawAxis(2);
+		
 	}
 }

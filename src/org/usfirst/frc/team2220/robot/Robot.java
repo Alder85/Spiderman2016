@@ -56,7 +56,7 @@ public class Robot extends SampleRobot {
 	ModuleRotation brModule = new ModuleRotation(talon5);
 	
 	SmartDashboard dash = new SmartDashboard();
-	TwilightTalon[] talons = new TwilightTalon[16];
+	//TwilightTalon[] talons = new TwilightTalon[16];
 	TwilightTalon frWheel = new TwilightTalon(8);
 	TwilightTalon flWheel = new TwilightTalon(1);
 	TwilightTalon blWheel = new TwilightTalon(3);
@@ -122,11 +122,7 @@ public class Robot extends SampleRobot {
     	frModule.reverseSensor(false);
     	brModule.reverseSensor(false);
 
-    //	frModule.setOffset(-0.110);
-    //	brModule.setOffset(0.018);
-    	
-    //	flModule.setOffset(0.226);
-    //	blModule.setOffset(0.020);
+    
     	
     	double allTuning = 2.5;
     	
@@ -145,7 +141,8 @@ public class Robot extends SampleRobot {
     	double[] temp = new double[4];
     	
         while (isOperatorControl() && isEnabled()) {
-        	
+        	/*
+        	xbox.update();
         	secondController.update();
         	if(secondController.whileHeld(Button.aButton))
         	{
@@ -173,84 +170,13 @@ public class Robot extends SampleRobot {
         	{
         		collectorExtender.set(0);
         	}
-        	dash.putBoolean("frontCollector", !frontCollector.get());
-        	dash.putBoolean("rearCollector", !rearCollector.get());
-        	
-        	dash.putNumber("backRightErr", talon5.getError());
-        	dash.putNumber("backLeftErr", talon4.getError());
-        	dash.putNumber("frontRightErr", talon7.getError());
-        	dash.putNumber("frontLeftErr", talon2.getError());
-        	
-        	dash.putNumber("brPos", brModule.getDoublePosition());
-        	dash.putNumber("blPos", blModule.getDoublePosition());
-        	dash.putNumber("frPos", frModule.getDoublePosition());
-        	dash.putNumber("flPos", flModule.getDoublePosition());
-        	
-        	dash.putNumber("pos2", brModule.getModuloPosition());
-        	dash.putNumber("pos3", brModule.getDesiredPosition());
-//        	if(xbox.onPress(Button.aButton))
-
-        	
-        	
-        	dash.putBoolean("withinStopBR", brModule.withinRange());
-        	dash.putBoolean("withinStopBL", blModule.withinRange());
-        	dash.putBoolean("withinStopFR", frModule.withinRange());
-        	dash.putBoolean("withinStopFL", flModule.withinRange());
-        	
-        	
-        	dash.putNumber("powBR", talon5.getOutputCurrent());
-        	dash.putNumber("powBL", talon4.getOutputCurrent());
-        	dash.putNumber("powFR", talon7.getOutputCurrent());
-        	dash.putNumber("powFL", talon2.getOutputCurrent());
-        	
-        	
-        	temp[0] = talon5.getOutputCurrent();
-        	if(temp[0] > maxVal[0])
-        		maxVal[0] = temp[0];
-        	dash.putNumber("maxBR", maxVal[0]);
-        	
-        	temp[1] = talon4.getOutputCurrent();
-        	if(temp[1] > maxVal[1])
-        		maxVal[1] = temp[1];
-        	dash.putNumber("maxBL", maxVal[1]);
-        	
-        	temp[2] = talon7.getOutputCurrent();
-        	if(temp[2] > maxVal[2])
-        		maxVal[2] = temp[2];
-        	dash.putNumber("maxFR", maxVal[2]);
-        	
-        	temp[3] = talon2.getOutputCurrent();
-        	if(temp[3] > maxVal[3])
-        		maxVal[3] = temp[3];
-        	dash.putNumber("maxFL", maxVal[3]);
-        	
-        	xbox.update();
-        	
+        	       	        	
         	leftAxis = deadZone(xbox.getRawAxis(1), wheelDZ);
         	rightAxis = deadZone(xbox.getRawAxis(5) * -1, wheelDZ);
         	
         	
         	drivetrain.setLeftWheels(leftAxis);
         	drivetrain.setRightWheels(rightAxis);
-        	//if(xbox.onPress(Button.lBumper))
-        	//	drivetrain.goToDefault();
-        	
-        	/*
-        	if right trigger > 0.15 go into follower mode
-        	
-        	 */
-        	/*
-        	if(xbox.getRawAxis(3) > 0.15)
-        	{
-        		flModule.setFollower(frModule.getDeviceID());
-        		blModule.setFollower(frModule.getDeviceID());
-        		brModule.setFollower(frModule.getDeviceID());
-        	}
-        	else
-        	{
-        		//TODO
-        	}
-        	*/
         	
         	if(xbox.whileHeld(Button.aButton))
         	{
@@ -270,13 +196,6 @@ public class Robot extends SampleRobot {
             	flModule.setP(tempTune);
             	blModule.setP(tempTune);
         	}
-        	/*
-        	if(xbox.onPress(Button.xButton)) 
-        		drivetrain.incrementAllModules(turnQuarters);
-        	
-        	if(xbox.onPress(Button.yButton))
-        		drivetrain.incrementAllModules(-turnQuarters);
-        		*/
         	
         	if(xbox.onPress(Button.lBumper))
         		drivetrain.turnInwards();
@@ -307,32 +226,66 @@ public class Robot extends SampleRobot {
         		rightShooter.set(0);
         		leftShooter.set(0);
         	}
-        	/*
-        	secondController.update();
-        	if(secondController.whileHeld(Button.aButton))
-        	{
-        		collector.set(1.0);
-        	}
-        	else
-        	{
-        		collector.set(0);
-        	}
-        	
-        	if(secondController.whileHeld(Button.bButton))
-        	{
-        		rightShooter.set(1.0);
-        		leftShooter.set(-1.0);
-        	}
-        	else
-        	{
-        		rightShooter.set(0);
-        		leftShooter.set(0);
-        	}
         	*/
         	
         	
+        	/////////////////////////
+        	//   Print Everything  //
+        	/////////////////////////
+        	
+        	dash.putBoolean("frontCollector", !frontCollector.get());
+        	dash.putBoolean("rearCollector", !rearCollector.get());
+        	
+        	dash.putNumber("backRightErr", talon5.getError());
+        	dash.putNumber("backLeftErr", talon4.getError());
+        	dash.putNumber("frontRightErr", talon7.getError());
+        	dash.putNumber("frontLeftErr", talon2.getError());
+        	
+        	dash.putNumber("brPos", brModule.getDoublePosition());
+        	dash.putNumber("blPos", blModule.getDoublePosition());
+        	dash.putNumber("frPos", frModule.getDoublePosition());
+        	dash.putNumber("flPos", flModule.getDoublePosition());
+        	
+        	dash.putNumber("pos2", brModule.getModuloPosition());
+        	dash.putNumber("pos3", brModule.getDesiredPosition());
+
+        	dash.putBoolean("withinStopBR", brModule.withinRange());
+        	dash.putBoolean("withinStopBL", blModule.withinRange());
+        	dash.putBoolean("withinStopFR", frModule.withinRange());
+        	dash.putBoolean("withinStopFL", flModule.withinRange());
         	
         	
+        	dash.putNumber("powBR", talon5.getOutputCurrent());
+        	dash.putNumber("powBL", talon4.getOutputCurrent());
+        	dash.putNumber("powFR", talon7.getOutputCurrent());
+        	dash.putNumber("powFL", talon2.getOutputCurrent());
+        	
+        	
+			/////////////////////////
+			//     Max Currents    //
+			/////////////////////////
+        	temp[0] = talon5.getOutputCurrent();
+        	if(temp[0] > maxVal[0])
+        		maxVal[0] = temp[0];
+        	dash.putNumber("maxBR", maxVal[0]);
+        	
+        	temp[1] = talon4.getOutputCurrent();
+        	if(temp[1] > maxVal[1])
+        		maxVal[1] = temp[1];
+        	dash.putNumber("maxBL", maxVal[1]);
+        	
+        	temp[2] = talon7.getOutputCurrent();
+        	if(temp[2] > maxVal[2])
+        		maxVal[2] = temp[2];
+        	dash.putNumber("maxFR", maxVal[2]);
+        	
+        	temp[3] = talon2.getOutputCurrent();
+        	if(temp[3] > maxVal[3])
+        		maxVal[3] = temp[3];
+        	dash.putNumber("maxFL", maxVal[3]);
+			/////////////////////////
+			//   Test All Modules  //
+			/////////////////////////
         	frWheel.test();
         	flWheel.test();
         	blWheel.test();
