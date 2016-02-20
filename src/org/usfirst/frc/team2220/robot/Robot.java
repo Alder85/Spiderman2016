@@ -71,6 +71,9 @@ public class Robot extends SampleRobot {
 	TwilightTalon rightShooter = new TwilightTalon(9);
 	TwilightTalon leftShooter  = new TwilightTalon(12);
 	
+	TwilightTalon lifterRelease = new TwilightTalon(13);
+	TwilightTalon wench = new TwilightTalon(14);
+	
 	//POSITIVE SPINS counterclockwise
 	TwilightTalon collectorExtender = new TwilightTalon(11);
 	//counterclockwise for backward
@@ -110,6 +113,8 @@ public class Robot extends SampleRobot {
     	collector.setMaxCurrent(60);
     	rightShooter.setMaxCurrent(70);
     	leftShooter.setMaxCurrent(70);
+    	collectorExtender.setMaxCurrent(120);
+    	lifterRelease.setMaxCurrent(30);
     	
     	flModule.reverseTalon(true);
     	blModule.reverseTalon(true);
@@ -135,8 +140,16 @@ public class Robot extends SampleRobot {
     	drivetrain.setModules(flModule, frModule, brModule, blModule);
     	drivetrain.setWheels(flWheel, frWheel, brWheel, blWheel);
     	
-    	int turnQuarters = 2;
+    	lifterRelease.setFeedbackDevice(FeedbackDevice.PulseWidth);
+    	lifterRelease.changeControlMode(TalonControlMode.Position);
+    	lifterRelease.setPID(1.0, 0.001, 0.0);
+    	lifterRelease.reverseOutput(true);
+    	double lifterPosition = (lifterRelease.getPulseWidthPosition() / 4096);
+    	
+    	lifterRelease.setAllowableClosedLoopErr(30);
+    	
     	double leftAxis, rightAxis;
+    	double wenchAxis;
     	double[] maxVal = new double[4];
     	double wheelDZ = 0.15;
     	double[] temp = new double[4];
@@ -161,6 +174,23 @@ public class Robot extends SampleRobot {
         	
         	if(driverController.onPress(Button.rBumper))
         		drivetrain.turnInwards();
+        	
+        	if(driverController.whileHeld(Button.aButton))
+        	{
+        		double tempTune = 1;
+        		frModule.setP(tempTune);
+        		flModule.setP(tempTune);
+        		blModule.setP(tempTune);
+        		brModule.setP(tempTune);
+        	}
+        	else
+        	{
+        		double tempTune = allTuning;
+        		frModule.setP(tempTune);
+        		flModule.setP(tempTune);
+        		blModule.setP(tempTune);
+        		brModule.setP(tempTune);
+        	}
         	
 			/////////////////////////
 			//     Drive Wheels    //
@@ -189,7 +219,7 @@ public class Robot extends SampleRobot {
 			/////////////////////////
 			//    Shooter Wheels   //
 			/////////////////////////
-			if(manipulatorController.onPress(Button.aButton))
+			if(manipulatorController.whileHeld(Button.aButton))
 			{
         		rightShooter.set(1.0);
         		leftShooter.set(-1.0);
@@ -199,17 +229,20 @@ public class Robot extends SampleRobot {
         		rightShooter.set(0);
         		leftShooter.set(0);
         	}
-			
+
+			/////////////////////////
+			//  Collector Extender //
+			/////////////////////////
 			if(manipulatorController.getPOV() != -1)
 			{
-				if(manipulatorController.getPOV() == 0)
+				if(manipulatorController.getPOV() == 0 || manipulatorController.getPOV() == 315 || manipulatorController.getPOV() == 45)
 				{
 					if(frontCollector.get())
 	        			collectorExtender.set(-1.0);
 	        		else
 	        			collectorExtender.set(0);
 				}
-				else if(manipulatorController.getPOV() == 180)
+				else if(manipulatorController.getPOV() == 135 || manipulatorController.getPOV() == 180 || manipulatorController.getPOV() == 225)
 				{
 					if(rearCollector.get())
 	        			collectorExtender.set(1.0);
@@ -226,97 +259,19 @@ public class Robot extends SampleRobot {
         		collectorExtender.set(0);
         	}
 			
-			
-			//dash.putNumber("manipPov", manipulatorController.getPOV());
-        	
-        	/*
-        	xbox.update();
-        	secondController.update();
-        	if(secondController.whileHeld(Button.aButton))
-        	{
-        		if(frontCollector.get())
-        		{
-        			collectorExtender.set(-1.0);
-        		}
-        		else
-        		{
-        			collectorExtender.set(0);
-        		}
-        	}
-        	else if(secondController.whileHeld(Button.bButton))
-        	{
-        		if(rearCollector.get())
-        		{
-        			collectorExtender.set(1.0);
-        		}
-        		else
-        		{
-        			collectorExtender.set(0);
-        		}
-        	}
-        	else
-        	{
-        		collectorExtender.set(0);
-        	}
-        	       	        	
-        	leftAxis = deadZone(xbox.getRawAxis(1), wheelDZ);
-        	rightAxis = deadZone(xbox.getRawAxis(5) * -1, wheelDZ);
-        	
-        	
-        	drivetrain.setLeftWheels(leftAxis);
-        	drivetrain.setRightWheels(rightAxis);
-        	
-        	if(xbox.whileHeld(Button.aButton))
-        	{
-        		double tempTune = 1;
-        		turnQuarters = 1;
-            	frModule.setP(tempTune);
-            	brModule.setP(tempTune);
-            	flModule.setP(tempTune);
-            	blModule.setP(tempTune);
-        	}
-        	else
-        	{
-        		double tempTune = 2.5;
-        		turnQuarters = 2;
-            	frModule.setP(tempTune);
-            	brModule.setP(tempTune);
-            	flModule.setP(tempTune);
-            	blModule.setP(tempTune);
-        	}
-        	
-        	if(xbox.onPress(Button.lBumper))
-        		drivetrain.turnInwards();
-        	
-        	if(xbox.onPress(Button.rBumper))
-        		drivetrain.turnOutwards();
-        
-        	if(xbox.whileHeld(Button.xButton))
-        	{
-        		collector.set(1.0);
-        	}
-        	else if(xbox.whileHeld(Button.start))
-        	{
-        		collector.set(-1.0);
-        	}
-        	else
-        	{
-        		collector.set(0);
-        	}
-        	
-        	if(xbox.whileHeld(Button.yButton))
-        	{
-        		rightShooter.set(1.0);
-        		leftShooter.set(-1.0);
-        	}
-        	else
-        	{
-        		rightShooter.set(0);
-        		leftShooter.set(0);
-        	}
-        	*/
-        	
-        	
+			/////////////////////////
+			//    Lifter Release   //
+			///////////////////////// TODO make it so you can only press this button once
+			if(manipulatorController.onPress(Button.bButton))
+			{
+				if(rearCollector.get())
+				{
+					lifterRelease.set(lifterRelease.get() - 0.1875);
+				}
+			}
+			wenchAxis = deadZone(manipulatorController.getRawAxis(1) * -1, wheelDZ);
+        	wench.set(wenchAxis);
+			       	
         	/////////////////////////
         	//   Print Everything  //
         	/////////////////////////
@@ -348,6 +303,9 @@ public class Robot extends SampleRobot {
         	dash.putNumber("powFR", talon7.getOutputCurrent());
         	dash.putNumber("powFL", talon2.getOutputCurrent());
         	
+        	dash.putNumber("leftShooterCurrent", leftShooter.getOutputCurrent());
+        	dash.putNumber("rightShooterCurrent", rightShooter.getOutputCurrent());
+        	
         	
 			/////////////////////////
 			//     Max Currents    //
@@ -371,6 +329,7 @@ public class Robot extends SampleRobot {
         	if(temp[3] > maxVal[3])
         		maxVal[3] = temp[3];
         	dash.putNumber("maxFL", maxVal[3]);
+        	
 			/////////////////////////
 			//   Test All Modules  //
 			/////////////////////////
@@ -383,8 +342,11 @@ public class Robot extends SampleRobot {
         	talon4.test();
         	talon5.test();
         	collector.test();
-        	rightShooter.test();
-        	leftShooter.test();
+        	//rightShooter.test();
+        	//leftShooter.test();
+        	
+        	lifterRelease.test();
+        	collectorExtender.test();
         	
        
 
