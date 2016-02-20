@@ -4,6 +4,7 @@ package org.usfirst.frc.team2220.robot;
 
 //import edu.wpi.first.wpilibj.*;
 import org.usfirst.frc.team2220.robot.XBoxController.Button;
+import org.usfirst.frc.team2220.robot.XBoxController.TriggerButton;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
@@ -81,8 +82,8 @@ public class Robot extends SampleRobot {
 	
 	//LEFt need to be flipped
 	//xbox start 0,0 top left so flip right
-	XBoxController xbox = new XBoxController(0);
-	XBoxController secondController = new XBoxController(1);
+	XBoxController driverController = new XBoxController(0);
+	XBoxController manipulatorController = new XBoxController(1);
 	
 	
  	//testModule.changeControlMode(TalonControlMode.Position);
@@ -141,6 +142,93 @@ public class Robot extends SampleRobot {
     	double[] temp = new double[4];
     	
         while (isOperatorControl() && isEnabled()) {
+			/////////////////////////
+			//  Primary Controller //
+			/////////////////////////
+        	driverController.update();
+        	
+			/////////////////////////
+			//       Modules       //
+			/////////////////////////
+        	if(driverController.onPress(TriggerButton.lTrigger))
+        		drivetrain.incrementAllModules(-1);
+        	
+        	if(driverController.onPress(TriggerButton.rTrigger))
+        		drivetrain.incrementAllModules(1);
+        	
+        	if(driverController.onPress(Button.lBumper))
+        		drivetrain.turnOutwards();
+        	
+        	if(driverController.onPress(Button.rBumper))
+        		drivetrain.turnInwards();
+        	
+			/////////////////////////
+			//     Drive Wheels    //
+			/////////////////////////
+        	leftAxis = deadZone(driverController.getRawAxis(1), wheelDZ);
+        	rightAxis = deadZone(driverController.getRawAxis(5) * -1, wheelDZ);
+        	
+        	drivetrain.setLeftWheels(leftAxis);
+        	drivetrain.setRightWheels(rightAxis);
+        	
+			//////////////////////////
+			// Secondary Controller //
+			//////////////////////////
+			manipulatorController.update();
+			
+			/////////////////////////
+			//      Collector      //
+			/////////////////////////
+			if(manipulatorController.whileHeld(TriggerButton.lTrigger))
+				collector.set(1.0);
+			else if(manipulatorController.whileHeld(TriggerButton.rTrigger))
+				collector.set(-1.0);
+			else
+				collector.set(0);
+			
+			/////////////////////////
+			//    Shooter Wheels   //
+			/////////////////////////
+			if(manipulatorController.onPress(Button.aButton))
+			{
+        		rightShooter.set(1.0);
+        		leftShooter.set(-1.0);
+        	}
+        	else
+        	{
+        		rightShooter.set(0);
+        		leftShooter.set(0);
+        	}
+			
+			if(manipulatorController.getPOV() != -1)
+			{
+				if(manipulatorController.getPOV() == 0)
+				{
+					if(frontCollector.get())
+	        			collectorExtender.set(-1.0);
+	        		else
+	        			collectorExtender.set(0);
+				}
+				else if(manipulatorController.getPOV() == 180)
+				{
+					if(rearCollector.get())
+	        			collectorExtender.set(1.0);
+	        		else
+	        			collectorExtender.set(0);
+				}
+				else
+	        	{
+	        		collectorExtender.set(0);
+	        	}
+			}
+			else
+        	{
+        		collectorExtender.set(0);
+        	}
+			
+			
+			//dash.putNumber("manipPov", manipulatorController.getPOV());
+        	
         	/*
         	xbox.update();
         	secondController.update();

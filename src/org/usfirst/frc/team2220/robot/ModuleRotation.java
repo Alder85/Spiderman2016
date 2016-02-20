@@ -106,17 +106,7 @@ public class ModuleRotation {
 		else
 			target -= quarters * 0.125;
 		talon.set(target);
-	}
-	
-	/**
-	 * same as incrementQuarters, except it's 8ths
-	 * except 8ths is actually 16ths of a full turn, but we call them 8ths because of the symmetry
-	 */
-	void incrementEights(int eights)
-	{
-		
-	}
-	
+	}	
 	
 	/**
 	 * We don't need this anymore!
