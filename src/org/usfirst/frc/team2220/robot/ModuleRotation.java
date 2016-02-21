@@ -100,12 +100,15 @@ public class ModuleRotation {
 	 */
 	void incrementQuarters(int quarters) {		
 		//target = talon.get() + (quarters * 0.125);
-		talon.enable();
-		if(!isRightWheel)
-			target += quarters * 0.125;
-		else
-			target -= quarters * 0.125;
-		talon.set(target);
+		//talon.enable();
+		if(talon.isEnabled())
+		{
+			if(!isRightWheel)
+				target += quarters * 0.125;
+			else
+				target -= quarters * 0.125;
+			talon.set(target);
+		}
 	}	
 	
 	/**

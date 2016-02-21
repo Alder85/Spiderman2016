@@ -5,6 +5,9 @@ public class TwilightTalon extends CANTalon{
 	private double maxTemp;
 	private double maxCurrent;
 	private boolean disabled = false;
+	private boolean tripped = false;
+	private Timer timer = new Timer();
+	private Timer resetTimer = new Timer();
 	
 	/**
 	 * Cast of CANTalon class
@@ -13,8 +16,8 @@ public class TwilightTalon extends CANTalon{
 	 */
 	public TwilightTalon(int port) {
 		super(port);
-		maxCurrent = 40.0;	//Normal Load Value
-		maxTemp = 500.0;	//Could not find temp value, currently placeholder
+		maxCurrent = 40.0;	//Stall Current for RS 775 12V + 10A
+		maxTemp = 500.0;	//We don't use this
 	}
 	
 	public void setMaxCurrent(double newCurrent) {
@@ -25,6 +28,7 @@ public class TwilightTalon extends CANTalon{
 		maxTemp = newTemp;
 	}
 	
+	@Override
 	public void set(double setpoint)
 	{
 		if(!disabled)
@@ -33,6 +37,24 @@ public class TwilightTalon extends CANTalon{
 		}
 	}
 	
+	@Override
+	public void disable()
+	{
+		super.disable();
+		disabled = true;
+	}
+	
+	@Override
+	public void enable()
+	{
+		super.enable();
+		disabled = false;
+	}
+	
+	public boolean isDisabled()
+	{
+		return disabled;
+	}
 	/**
 	 * Tests whether Talon is within 'safe' levels
 	 * @return Whether the test was passed
@@ -41,12 +63,29 @@ public class TwilightTalon extends CANTalon{
 		boolean test = true;
 		if (isOverMaxCurrent()) 
 			test = false;
-	//	if (isOverMaxTemp())
-		//	test = false;
 		if(!test)
 		{
-			this.disable();
-			disabled = true;
+			if(!tripped)
+			{
+				timer.reset();
+				timer.start();
+				tripped = true;
+			}
+			
+			if(timer.get() > 0.5)
+			{
+				timer.stop();
+				timer.reset();
+				this.disable();
+				disabled = true;
+			}
+			
+		}
+		else
+		{
+			tripped = false;
+			timer.stop();
+			timer.reset();
 		}
 		return test;
 	}
