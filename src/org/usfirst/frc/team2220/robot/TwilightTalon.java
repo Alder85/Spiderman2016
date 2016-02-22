@@ -8,6 +8,7 @@ public class TwilightTalon extends CANTalon{
 	private boolean tripped = false;
 	private Timer timer = new Timer();
 	private Timer resetTimer = new Timer();
+	private double tripTime = 0.15;
 	
 	/**
 	 * Cast of CANTalon class
@@ -72,7 +73,7 @@ public class TwilightTalon extends CANTalon{
 				tripped = true;
 			}
 			
-			if(timer.get() > 0.15)
+			if(timer.get() > tripTime) //CHANGE THIS
 			{
 				timer.stop();
 				timer.reset();
