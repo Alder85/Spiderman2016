@@ -16,7 +16,7 @@ public class TwilightTalon extends CANTalon{
 	 */
 	public TwilightTalon(int port) {
 		super(port);
-		maxCurrent = 40.0;	//Stall Current for RS 775 12V + 10A
+		maxCurrent = 30.0;	//Stall Current for RS 775 12V + 10A
 		maxTemp = 500.0;	//We don't use this
 	}
 	
@@ -72,7 +72,7 @@ public class TwilightTalon extends CANTalon{
 				tripped = true;
 			}
 			
-			if(timer.get() > 0.5)
+			if(timer.get() > 0.15)
 			{
 				timer.stop();
 				timer.reset();

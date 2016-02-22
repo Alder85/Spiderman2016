@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -92,6 +93,7 @@ public class Robot extends SampleRobot {
 	DigitalInput frontCollector = new DigitalInput(1);
 	DigitalInput rearCollector  = new DigitalInput(2);
 	
+	
 	Timer resetTimer = new Timer();
 	
  	//testModule.changeControlMode(TalonControlMode.Position);
@@ -116,7 +118,7 @@ public class Robot extends SampleRobot {
     	collector.setMaxCurrent(60);
     	rightShooter.setMaxCurrent(70);
     	leftShooter.setMaxCurrent(70);
-    	talon2.setMaxCurrent(5);
+    	//talon2.setMaxCurrent(5);
     	
     	collectorExtender.setMaxCurrent(120);
     	lifterRelease.setMaxCurrent(30);
@@ -124,14 +126,20 @@ public class Robot extends SampleRobot {
     	flModule.reverseTalon(true);
     	blModule.reverseTalon(true);
 
-    	frModule.reverseTalon(true);
-    	brModule.reverseTalon(false);
+    	frModule.reverseTalon(false);
+    	brModule.reverseTalon(true);
     	
     	frModule.setRightWheel(true);
     	brModule.setRightWheel(true);
     	
     	frModule.reverseSensor(false);
     	brModule.reverseSensor(false);
+    	
+    	talon2.enableBrakeMode(false);
+    	talon4.enableBrakeMode(false);
+    	talon5.enableBrakeMode(false);
+    	talon7.enableBrakeMode(false);
+    	
 
     	
     	
@@ -373,26 +381,42 @@ public class Robot extends SampleRobot {
         	talon7.test();
         	talon2.test();
         	talon4.test();
+        	
         	talon5.test();
         	
-        	if((talon7.isDisabled() || talon2.isDisabled() || talon4.isDisabled() || talon5.isDisabled()) && resetTimer.get() == 0)
+        	
+        	dash.putNumber("lifterRelease get", lifterRelease.get());
+        	dash.putNumber("lifterRelease pulseWidth", lifterRelease.getPulseWidthPosition());
+        	dash.putNumber("lifterRelease voltage", lifterRelease.getOutputVoltage());
+        	
+        	if((talon7.isDisabled() || talon2.isDisabled() || talon4.isDisabled() || talon5.isDisabled()))
         	{
-        		resetTimer.start();
+        		//resetTimer.start();
         		talon7.disable();
         		talon2.disable();
         		talon4.disable();
         		talon5.disable();
         	}
         	
-        	if(resetTimer.get() > 5.0)
+        	if(manipulatorController.onPress(Button.back))
         	{
-        		resetTimer.stop();
-        		resetTimer.reset();
+        		//resetTimer.stop();
+        		//resetTimer.reset();
         		talon7.enable();
         		talon2.enable();
         		talon4.enable();
         		talon5.enable();
-
+        		frModule.resetTarget();
+        		flModule.resetTarget();
+        		blModule.resetTarget();
+        		brModule.resetTarget();
+        	}
+        	if(manipulatorController.onPress(Button.start))
+        	{
+        		talon7.disable();
+        		talon2.disable();
+        		talon4.disable();
+        		talon5.disable();
         	}
         	
         	

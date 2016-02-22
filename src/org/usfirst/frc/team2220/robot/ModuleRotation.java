@@ -35,6 +35,11 @@ public class ModuleRotation {
 		//talon.set(defaultTarget);
 	}
 	
+	public void resetTarget()
+	{
+		target = getDoublePosition();
+	}
+	
 	/**
 	 * Gets relative distance from start, so modules can start differently from when macro was recorded
 	 * 
