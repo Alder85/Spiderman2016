@@ -227,7 +227,7 @@ public class Robot extends SampleRobot {
 			/////////////////////////
 			if(manipulatorController.whileHeld(TriggerButton.lTrigger))
 			{
-				if(!rearCollector.get())
+				if(rearCollector.get())
 				{
 					collector.set(1.0);
 				}
@@ -236,7 +236,7 @@ public class Robot extends SampleRobot {
 			}
 			else if(manipulatorController.whileHeld(TriggerButton.rTrigger))
 			{
-				if(!rearCollector.get())
+				if(rearCollector.get())
 				{
 					collector.set(-1.0);
 				}
