@@ -8,7 +8,7 @@ public class TwilightTalon extends CANTalon{
 	private boolean tripped = false;
 	private Timer timer = new Timer();
 	private Timer resetTimer = new Timer();
-	private double tripTime = 0.15;
+	private double tripTime = 0.25;
 	
 	/**
 	 * Cast of CANTalon class
