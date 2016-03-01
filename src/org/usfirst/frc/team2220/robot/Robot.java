@@ -68,8 +68,8 @@ public class Robot extends SampleRobot {
 	
 	
 	
-	TwilightTalon collector = new TwilightTalon(10);
-	TwilightTalon rightShooter = new TwilightTalon(9);
+	TwilightTalon collector = new TwilightTalon(9);
+	TwilightTalon rightShooter = new TwilightTalon(10);
 	TwilightTalon leftShooter  = new TwilightTalon(12);
 	
 	TwilightTalon lifterRelease = new TwilightTalon(13);
@@ -95,6 +95,8 @@ public class Robot extends SampleRobot {
 	
 	
 	Timer resetTimer = new Timer();
+	
+	Timer shootTimer = new Timer();
 	
  	//testModule.changeControlMode(TalonControlMode.Position);
 	//testModule.setFeedbackDevice(FeedbackDevice.EncFalling);
@@ -251,14 +253,20 @@ public class Robot extends SampleRobot {
 			/////////////////////////
 			if(manipulatorController.whileHeld(Button.aButton))
 			{
+				if(shootTimer.get() == 0)
+					shootTimer.start();
         		rightShooter.set(1.0);
         		leftShooter.set(-1.0);
+        		
         	}
         	else
         	{
         		rightShooter.set(0);
         		leftShooter.set(0);
+        		shootTimer.reset();
         	}
+			
+			dash.putNumber("shootTimer", shootTimer.get());
 
 			/////////////////////////
 			//  Collector Extender //
